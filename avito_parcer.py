@@ -20,12 +20,16 @@ def avito_parcer(base_url, headers):
         price = div.find('span', attrs={'data-marker': 'item-price'}).text.strip()
         description = div.find('div', attrs={'data-marker': 'item-specific-params'}).text.strip()
         time = div.find('div', attrs={'data-marker': 'item-date'}).text.strip()
-        cars.append({
-            'title': title,
-            'price': price,
-            'description': description,
-            'time': time
-        })
+        absolute_time1 = div.find('div', attrs={'class': 'item-date'}).div['data-absolute-date'].split()[0]
+        absolute_time2 = div.find('div', attrs={'class': 'item-date'}).div['data-absolute-date'].split()[1].split(':')[0][1]
+        absolute_time = absolute_time1 + ' в ' + absolute_time2 + ' часов'
+        if absolute_time1 == 'Сегодня' and absolute_time2 == '9':
+            cars.append({
+                'title': title,
+                'price': price,
+                'description': description,
+                'time': absolute_time
+            })
     return cars
 
 
@@ -39,3 +43,4 @@ def csv_writer(cars):
 
 cars = avito_parcer(base_url, headers)
 csv_writer(cars)
+
